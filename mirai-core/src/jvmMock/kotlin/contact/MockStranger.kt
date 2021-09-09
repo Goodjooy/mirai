@@ -17,7 +17,7 @@ public interface MockStranger : Stranger, MockContact {
     override var remark: String
 
     /**
-     * 广播好友主动解除与 [bot] 的关系的事件
+     * 广播陌生人主动解除与 [bot] 的关系的事件
      *
      * 即使该函数体实现为 [delete], 也请使用该方法广播 **bot 被陌生人删除**，
      * 以确保不会受到未来的事件架构变更带来的影响

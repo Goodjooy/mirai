@@ -18,7 +18,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 /**
- * 用于资料服务, 用于 [IMirai.queryProfile] 查询用户资料
+ * 用户资料服务, 用于 [IMirai.queryProfile] 查询用户资料
  *
  * implementation note: Java 请实现 [UserProfileServiceJ]
  */
