@@ -75,100 +75,20 @@ public fun Stranger.mock(): MockStranger {
 }
 
 @MockBotDSL
-public inline infix fun MockBot.group(value: Long): MockGroup = getGroupOrFail(value)
+public inline fun MockBot.group(value: Long): MockGroup = getGroupOrFail(value)
 
 @MockBotDSL
-public inline infix fun MockBot.friend(value: Long): MockFriend = getFriendOrFail(value)
+public inline fun MockBot.friend(value: Long): MockFriend = getFriendOrFail(value)
 
 @MockBotDSL
-public inline infix fun MockBot.stranger(value: Long): MockStranger = getStrangerOrFail(value)
+public inline fun MockBot.stranger(value: Long): MockStranger = getStrangerOrFail(value)
 
 @MockBotDSL
-public inline infix fun MockGroup.member(id: Long): MockNormalMember = getOrFail(id)
+public inline fun MockGroup.member(id: Long): MockNormalMember = getOrFail(id)
 
 @MockBotDSL
-public inline infix fun MockGroup.anonymous(name: String): MockAnonymousMember =
+public inline fun MockGroup.anonymous(name: String): MockAnonymousMember =
     newAnonymous(name, UUID.randomUUID().toString())
-
-
-/**
- * 令 [actor] 发起戳一戳, 戳一戳的发起者为 [actor], 被戳者为 [Nudge.target]
- */
-@MockBotDSL
-public suspend infix fun Nudge.startAction(actor: UserOrBot) {
-    val target = this.target
-    NudgeEvent(
-        actor,
-        target,
-        when (target) {
-            is Member -> target.group
-            is Friend -> target
-            is Stranger -> target
-            is Bot -> {
-                when (actor) {
-                    is Bot -> error("Can't send BotNudged by bot-self")
-                    is Friend -> actor
-                    is Member -> actor.group
-                    is Stranger -> actor
-                    else -> error("STUB")
-                }
-            }
-            else -> error("STUB")
-        },
-        "戳了戳",
-        ""
-    ).broadcast()
-}
-
-@MockBotDSL
-public suspend fun MessageChain.mockFireRecalled(operator: Contact? = null) {
-    source.mockFireRecalled(operator)
-}
-
-@MockBotDSL
-public suspend fun MessageSource.mockFireRecalled(operator: Contact? = null) {
-    val source = this
-    if (source is OnlineMessageSource) {
-        val from = source.sender
-        when (val target = source.target) {
-            is Group -> {
-                from.bot.mock().msgDatabase.removeMessageInfo(source)
-                MessageRecallEvent.GroupRecall(
-                    source.bot,
-                    from.id,
-                    source.ids,
-                    source.internalIds,
-                    source.time,
-                    operator?.cast(),
-                    target,
-                    when (from) {
-                        is Bot -> target.botAsMember
-                        else -> from.cast()
-                    }
-                ).broadcast()
-                return
-            }
-            is Friend -> {
-                from.bot.mock().msgDatabase.removeMessageInfo(source)
-                MessageRecallEvent.FriendRecall(
-                    source.bot,
-                    source.ids,
-                    source.internalIds,
-                    source.time,
-                    from.id,
-                    from.cast()
-                ).broadcast()
-                return
-            }
-        }
-    }
-    error("Unsupported message source type: ${source.javaClass}")
-}
-
-@MockBotDSL
-public suspend fun MessageReceipt<*>.mockFireRecalled(operator: Contact? = null) {
-    this.source.mockFireRecalled(operator)
-}
 
 @MockBotDSL
 public suspend fun ExternalResource.mockUploadAsOnlineAudio(bot: MockBot): OnlineAudio {

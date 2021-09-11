@@ -15,11 +15,19 @@ import net.mamoe.mirai.event.broadcast
 import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.FriendAddEvent
 import net.mamoe.mirai.mock.MockBotDSL
+import net.mamoe.mirai.mock.utils.MockActions
+import net.mamoe.mirai.mock.utils.MockActions.nickChangesTo
 import kotlin.random.Random
 
 @JvmBlockingBridge
-public interface MockFriend : Friend, MockContact {
+public interface MockFriend : Friend, MockContact, MockUser {
+    /**
+     * 直接修改 nick, 不会有事件广播
+     * @see [MockActions.nickChangesTo]
+     */
     override var nick: String
+
+    /** 直接修改 remark, 不会有事件广播 */
     override var remark: String
 
     /**

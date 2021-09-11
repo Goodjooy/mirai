@@ -28,13 +28,13 @@ import net.mamoe.mirai.utils.ExternalResource
 import kotlin.coroutines.CoroutineContext
 
 internal class MockAnonymousMemberImpl(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     bot: MockBot, id: Long,
 
     override val anonymousId: String,
     override val group: MockGroup,
     override var nameCard: String
-) : AbstractMockContact(coroutineContext, bot, id), MockAnonymousMember {
+) : AbstractMockContact(parentCoroutineContext, bot, id), MockAnonymousMember {
     override fun newMessagePreSend(message: Message): MessagePreSendEvent {
         TODO("Not yet implemented")
     }

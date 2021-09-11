@@ -27,6 +27,9 @@ import net.mamoe.mirai.mock.contact.announcement.MockOnlineAnnouncement
 import net.mamoe.mirai.mock.internal.MockBotImpl
 import net.mamoe.mirai.mock.userprofile.buildUserProfile
 import net.mamoe.mirai.mock.utils.*
+import net.mamoe.mirai.mock.utils.MockActions.mockFireRecalled
+import net.mamoe.mirai.mock.utils.MockActions.nudged
+import net.mamoe.mirai.mock.utils.MockActions.nudgedBy
 import net.mamoe.mirai.utils.ExternalResource.Companion.toAutoCloseable
 import net.mamoe.mirai.utils.ExternalResource.Companion.toExternalResource
 import org.junit.jupiter.api.AfterEach
@@ -69,7 +72,7 @@ internal class MockBotTest {
             assertEquals(0, group.members.size)
         }
 
-        val mockGroup = bot group 798100000L
+        val mockGroup = bot.group(798100000L)
         repeat(50) { i ->
             mockGroup.addMember(simpleMemberInfo(3700000L + i, "member$i", permission = MemberPermission.MEMBER))
         }
@@ -91,7 +94,7 @@ internal class MockBotTest {
         assertEquals(MemberPermission.MEMBER, mockGroup.botPermission)
         assertSame(newOwner, mockGroup.owner)
 
-        val newNewOwner = mockGroup member 3700000L
+        val newNewOwner = mockGroup.member(3700000L)
         runAndReceiveEventBroadcast {
             mockGroup.changeOwner(newNewOwner)
         }.let { events ->
@@ -187,7 +190,7 @@ internal class MockBotTest {
             }
         }
 
-        val member = group member 100000000
+        val member = group.member(100000000)
         assertEquals(MemberPermission.MEMBER, member.permission)
     }
 
@@ -272,7 +275,7 @@ internal class MockBotTest {
     @Test
     internal fun testGroupAnnouncements() = runBlocking<Unit> {
         val group = bot.addGroup(8484541, "87")
-        group.announcements.putDirect(
+        group.announcements.publish(
             MockOnlineAnnouncement(
                 content = "Hello World",
                 parameters = AnnouncementParameters.DEFAULT,
@@ -329,11 +332,18 @@ internal class MockBotTest {
         val nudgeSender = group.addMember0(simpleMemberInfo(3, "3", permission = MemberPermission.MEMBER))
         val nudged = group.addMember0(simpleMemberInfo(4, "4", permission = MemberPermission.MEMBER))
 
+        val myFriend = bot.addFriend(1, "514")
+        val myStranger = bot.addStranger(2, "awef")
+
         runAndReceiveEventBroadcast {
-            nudged.nudge().startAction(nudgeSender)
+            nudged.nudgedBy(nudgeSender)
             nudged.nudge().sendTo(group)
+            myFriend.nudged(bot)
+            myStranger.nudged(bot)
+            myFriend.nudgedBy(bot)
+            myStranger.nudgedBy(bot)
         }.let { events ->
-            assertEquals(2, events.size)
+            assertEquals(6, events.size)
             assertIsInstance<NudgeEvent>(events[0]) {
                 assertSame(nudgeSender, this.from)
                 assertSame(nudged, this.target)
@@ -343,6 +353,26 @@ internal class MockBotTest {
                 assertSame(bot, this.from)
                 assertSame(nudged, this.target)
                 assertSame(group, this.subject)
+            }
+            assertIsInstance<NudgeEvent>(events[2]) {
+                assertSame(myFriend, this.from)
+                assertSame(bot, this.target)
+                assertSame(myFriend, this.subject)
+            }
+            assertIsInstance<NudgeEvent>(events[3]) {
+                assertSame(myStranger, this.from)
+                assertSame(bot, this.target)
+                assertSame(myStranger, this.subject)
+            }
+            assertIsInstance<NudgeEvent>(events[4]) {
+                assertSame(bot, this.from)
+                assertSame(myFriend, this.target)
+                assertSame(myFriend, this.subject)
+            }
+            assertIsInstance<NudgeEvent>(events[5]) {
+                assertSame(bot, this.from)
+                assertSame(myStranger, this.target)
+                assertSame(myStranger, this.subject)
             }
         }
     }

@@ -29,13 +29,13 @@ import java.util.concurrent.CancellationException
 import kotlin.coroutines.CoroutineContext
 
 internal class MockFriendImpl(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     bot: MockBot,
     id: Long,
     override var nick: String,
     override var remark: String
 ) : AbstractMockContact(
-    coroutineContext,
+    parentCoroutineContext,
     bot, id
 ), MockFriend {
     override fun newMessagePreSend(message: Message): MessagePreSendEvent {

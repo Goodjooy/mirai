@@ -14,15 +14,12 @@ import net.mamoe.mirai.contact.NormalMember
 import net.mamoe.mirai.contact.announcement.AnnouncementParameters
 import net.mamoe.mirai.contact.announcement.Announcements
 import net.mamoe.mirai.contact.announcement.OnlineAnnouncement
-import net.mamoe.mirai.mock.MockBotDSL
+import net.mamoe.mirai.utils.MiraiInternalApi
 
-// TODO
 public interface MockAnnouncements : Announcements {
-    @MockBotDSL
-    public fun putDirect(announcement: MockOnlineAnnouncement)
 }
 
-public data class MockOnlineAnnouncement(
+public data class MockOnlineAnnouncement @MiraiInternalApi public constructor(
     override val content: String,
     override val parameters: AnnouncementParameters,
     override val senderId: Long,

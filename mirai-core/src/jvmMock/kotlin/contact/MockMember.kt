@@ -9,11 +9,13 @@
 
 package net.mamoe.mirai.mock.contact
 
+import net.mamoe.kjbb.JvmBlockingBridge
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.mock.MockBotDSL
 
-public interface MockMember : Member, MockContact {
+@JvmBlockingBridge
+public interface MockMember : Member, MockContact, MockUser {
     override var nick: String
     override var remark: String
     override val group: MockGroup

@@ -35,13 +35,13 @@ import java.util.concurrent.CancellationException
 import kotlin.coroutines.CoroutineContext
 
 internal class MockGroupImpl(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     bot: MockBot,
     id: Long,
     override var uin: Long,
     name: String,
 ) : AbstractMockContact(
-    coroutineContext, bot, id
+    parentCoroutineContext, bot, id
 ), MockGroup {
 
     override fun addMember(mockMember: MemberInfo): MockGroup {

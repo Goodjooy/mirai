@@ -9,10 +9,12 @@
 
 package net.mamoe.mirai.mock.contact
 
+import net.mamoe.kjbb.JvmBlockingBridge
 import net.mamoe.mirai.contact.Stranger
 import net.mamoe.mirai.mock.MockBotDSL
 
-public interface MockStranger : Stranger, MockContact {
+@JvmBlockingBridge
+public interface MockStranger : Stranger, MockContact, MockUser {
     override var nick: String
     override var remark: String
 

@@ -70,18 +70,6 @@ public interface MockGroup : Group, MockContact {
     override fun get(id: Long): MockNormalMember?
     override fun getOrFail(id: Long): MockNormalMember = super.getOrFail(id).cast()
 
-    override suspend fun says(message: MessageChain): Nothing {
-        throw UnsupportedOperationException("Group cannot saying a message")
-    }
-
-    override suspend fun says(message: String): Nothing {
-        throw UnsupportedOperationException("Group cannot saying a message")
-    }
-
-    override suspend fun says(message: Message): Nothing {
-        throw UnsupportedOperationException("Group cannot saying a message")
-    }
-
     /**
      * 主动广播有新成员加入的事件
      */

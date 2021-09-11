@@ -10,10 +10,7 @@
 package net.mamoe.mirai.mock.internal.contact
 
 import kotlinx.coroutines.cancel
-import net.mamoe.mirai.contact.MemberPermission
-import net.mamoe.mirai.contact.NormalMember
-import net.mamoe.mirai.contact.PermissionDeniedException
-import net.mamoe.mirai.contact.nameCardOrNick
+import net.mamoe.mirai.contact.*
 import net.mamoe.mirai.event.broadcast
 import net.mamoe.mirai.event.events.*
 import net.mamoe.mirai.message.MessageReceipt
@@ -33,20 +30,20 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
 internal class MockNormalMemberImpl(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     bot: MockBot,
     id: Long,
     override val group: MockGroup,
     override var permission: MemberPermission,
     override var remark: String,
-    override var nick: String,
+    nick: String,
     override var muteTimeRemaining: Int,
     override var joinTimestamp: Int,
     override var lastSpeakTimestamp: Int,
     specialTitle: String,
     nameCard: String,
 ) : AbstractMockContact(
-    coroutineContext, bot,
+    parentCoroutineContext, bot,
     id
 ), MockNormalMember {
 
@@ -56,14 +53,30 @@ internal class MockNormalMemberImpl(
     override var nameCard: String
         get() = _nameCard
         set(value) {
+            if (!group.botPermission.isOperator()) {
+                throw PermissionDeniedException("Bot don't have permission to change the namecard of $this")
+            }
             MemberCardChangeEvent(_nameCard, value, this).broadcastBlocking()
             _nameCard = value
         }
     override var specialTitle: String
         get() = _specialTitle
         set(value) {
+            if (group.botPermission != MemberPermission.OWNER) {
+                throw PermissionDeniedException("Bot is not the owner of $group so bot cannot change the specialTitle of $this")
+            }
             MemberSpecialTitleChangeEvent(_specialTitle, value, this, group.botAsMember).broadcastBlocking()
             _specialTitle = value
+        }
+
+    override var nick: String = nick
+        set(value) {
+            val friend0 = bot.getFriend(id)
+            if (friend0 != null) {
+                friend0.nick = value
+            } else {
+                field = value
+            }
         }
 
     override fun setNameCardNoEventBroadcast(value: String) {

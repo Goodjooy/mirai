@@ -12,6 +12,7 @@ package net.mamoe.mirai.mock.userprofile
 import net.mamoe.kjbb.JvmBlockingBridge
 import net.mamoe.mirai.IMirai
 import net.mamoe.mirai.data.UserProfile
+import net.mamoe.mirai.mock.userprofile.MockUserProfileBuilder.Companion.invoke
 import net.mamoe.mirai.utils.runBIO
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.contracts.InvocationKind
@@ -72,6 +73,12 @@ public interface UserProfileServiceJ : UserProfileService {
     public fun putUserProfileJ(id: Long, profile: UserProfile)
 }
 
+/**
+ * [UserProfile] 的 DSL 构造器
+ *
+ * @see [invoke]
+ * @see [buildUserProfile]
+ */
 public interface MockUserProfileBuilder {
     public fun build(): UserProfile
 
@@ -89,6 +96,11 @@ public interface MockUserProfileBuilder {
     }
 }
 
+/**
+ * 构造一个 [UserProfile]
+ *
+ * @see MockUserProfileBuilder
+ */
 public inline fun buildUserProfile(block: MockUserProfileBuilder.() -> Unit): UserProfile {
     contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
     return MockUserProfileBuilder().apply(block).build()

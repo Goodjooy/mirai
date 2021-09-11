@@ -27,13 +27,13 @@ import java.util.concurrent.CancellationException
 import kotlin.coroutines.CoroutineContext
 
 internal class MockStrangerImpl(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     bot: MockBot,
     id: Long,
 
     override var remark: String,
     override var nick: String
-) : AbstractMockContact(coroutineContext, bot, id), MockStranger {
+) : AbstractMockContact(parentCoroutineContext, bot, id), MockStranger {
     override fun newMessagePreSend(message: Message): MessagePreSendEvent {
         return StrangerMessagePreSendEvent(this, message)
     }

@@ -9,10 +9,9 @@
 
 package net.mamoe.mirai.mock.contact
 
-import net.mamoe.kjbb.JvmBlockingBridge
-import net.mamoe.mirai.contact.Contact
+import net.mamoe.mirai.contact.ContactOrBot
+import net.mamoe.mirai.mock.MockBot
 
-@JvmBlockingBridge
-@Suppress("unused")
-public interface MockContact : Contact, MockContactOrBot {
+public interface MockContactOrBot : ContactOrBot {
+    override val bot: MockBot
 }

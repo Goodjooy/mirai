@@ -13,6 +13,7 @@ import net.mamoe.mirai.contact.MemberPermission
 import net.mamoe.mirai.mock.MockBotFactory
 import net.mamoe.mirai.mock.addGroup
 import net.mamoe.mirai.mock.contact.addMember
+import net.mamoe.mirai.mock.utils.MockActions.sayMessage
 import net.mamoe.mirai.mock.utils.group
 import net.mamoe.mirai.mock.utils.member
 import net.mamoe.mirai.mock.utils.mockUploadAsOnlineAudio
@@ -36,7 +37,9 @@ internal suspend fun dslTest() {
         }
     }
 
-    bot group 50 member 70 says "0"
-    bot group 1 member 1 says File("helloworld.amr").toExternalResource().toAutoCloseable().mockUploadAsOnlineAudio(bot)
+    bot.group(50).member(70) says "0"
+    bot.group(1).member(1) sayMessage {
+        File("helloworld.amr").toExternalResource().toAutoCloseable().mockUploadAsOnlineAudio(bot)
+    }
 
 }

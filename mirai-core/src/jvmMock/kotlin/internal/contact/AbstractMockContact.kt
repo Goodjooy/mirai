@@ -26,12 +26,12 @@ import net.mamoe.mirai.utils.*
 import kotlin.coroutines.CoroutineContext
 
 internal abstract class AbstractMockContact(
-    coroutineContext: CoroutineContext,
+    parentCoroutineContext: CoroutineContext,
     override val bot: MockBot,
     override val id: Long
 ) : MockContact {
 
-    override val coroutineContext: CoroutineContext = coroutineContext.childScopeContext()
+    override val coroutineContext: CoroutineContext = parentCoroutineContext.childScopeContext()
 
     /**
      * @return isCancelled

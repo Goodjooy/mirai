@@ -15,10 +15,7 @@ import net.mamoe.kjbb.JvmBlockingBridge
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.contact.ContactList
 import net.mamoe.mirai.message.data.OnlineAudio
-import net.mamoe.mirai.mock.contact.MockFriend
-import net.mamoe.mirai.mock.contact.MockGroup
-import net.mamoe.mirai.mock.contact.MockOtherClient
-import net.mamoe.mirai.mock.contact.MockStranger
+import net.mamoe.mirai.mock.contact.*
 import net.mamoe.mirai.mock.database.MessageDatabase
 import net.mamoe.mirai.mock.fsserver.TmpFsServer
 import net.mamoe.mirai.mock.userprofile.UserProfileService
@@ -33,8 +30,8 @@ import kotlin.internal.LowPriorityInOverloadResolution
 
 @Suppress("unused")
 @JvmBlockingBridge
-public interface MockBot : Bot {
-
+public interface MockBot : Bot, MockContactOrBot, MockUserOrBot {
+    override val bot: MockBot get() = this
 
     /// Contract API override
     @MockBotDSL
